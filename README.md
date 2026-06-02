@@ -66,7 +66,7 @@ Description:
 
 Detection example:
 
-![Scheduled Task Detection](screenshots/scheduled-task-detection-t1053.png)
+![MITRE ATT&CK Detection](screenshots/wazuh-mitre-t1053.png)
 
 ---
 
