@@ -1,100 +1,92 @@
 # Wazuh Blue Team Lab
 
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.14.5-blue)
-![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
+![MITRE ATT\&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
 ![Sysmon](https://img.shields.io/badge/Sysmon-Endpoint%20Monitoring-green)
-![Windows](https://img.shields.io/badge/Windows-10-blue)
-![Ubuntu](https://img.shields.io/badge/Ubuntu-Server-orange)
+![Threat Intelligence](https://img.shields.io/badge/Threat%20Intelligence-AlienVault%20OTX-yellow)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Grafana](https://img.shields.io/badge/Grafana-Dashboard-orange)
 
-> A hands-on Security Monitoring Lab simulating real-world Blue Team operations, with custom Wazuh detection rules validated against MITRE ATT&CK techniques using Atomic Red Team.
+> A hands-on Security Monitoring Lab simulating real-world Blue Team operations using Wazuh, Sysmon, Atomic Red Team, Threat Intelligence feeds, and custom detection engineering.
 
 ---
 
 ## Overview
 
-This project documents the deployment of a Wazuh-based Security Monitoring Lab used for Blue Team operations, threat hunting, and MITRE ATT&CK detection validation.
+This project documents the deployment of a Wazuh-based Security Monitoring Lab focused on:
+
+* Security Monitoring
+* Detection Engineering
+* Threat Hunting
+* Threat Intelligence
+* MITRE ATT&CK Validation
+* Incident Investigation
 
 The environment includes:
 
-- Wazuh Manager running on Ubuntu Server
-- Windows 10 endpoint monitored with Sysmon
-- Atomic Red Team simulations
-- MITRE ATT&CK mapping
-- Custom detection rules
-- Event investigation and threat hunting workflows
+* Wazuh Manager (Docker)
+* Ubuntu Server
+* Windows 10 Endpoint
+* Kali Linux Attack Machine
+* Sysmon Telemetry
+* Atomic Red Team Simulations
+* AlienVault OTX Threat Intelligence
+* Grafana Dashboards
+* Custom Detection Rules
 
 ---
 
 ## Lab Architecture
 
-| Component | Description |
-|-----------|-------------|
-| Wazuh Manager | Centralized SIEM platform (v4.14.5) |
-| Ubuntu Server | Hosts Wazuh services |
-| Windows 10 Endpoint | Target monitored host |
-| Sysmon | Advanced endpoint telemetry |
-| Atomic Red Team | Attack simulation framework |
-| Docker + Portainer | Container management |
-
----
-
-## Setup & Requirements
-
-| Item | Details |
-|------|---------|
-| Wazuh Version | v4.14.5 |
-| Host OS (Manager) | Ubuntu Server |
-| Host OS (Endpoint) | Windows 10 |
-| RAM | 16GB |
-
-### Quick Start
-
-1. Deploy Wazuh Manager on Ubuntu following the [official docs](https://documentation.wazuh.com)
-2. Install and configure Sysmon on the Windows endpoint
-3. Enroll the Windows agent on Wazuh Manager
-4. Import the custom detection rules (see section below)
-5. Run Atomic Red Team tests to validate detections
+| Component          | Description                   |
+| ------------------ | ----------------------------- |
+| Wazuh Manager      | Centralized SIEM platform     |
+| Ubuntu Server      | Hosts Wazuh services          |
+| Windows 10         | Monitored endpoint            |
+| Kali Linux         | Attack simulation workstation |
+| Sysmon             | Endpoint telemetry            |
+| Atomic Red Team    | ATT&CK technique simulation   |
+| AlienVault OTX     | Threat Intelligence feed      |
+| Docker + Portainer | Container management          |
+| Grafana            | Dashboard visualization       |
 
 ---
 
 ## Active Agents
 
-The environment consists of a Windows endpoint and a Linux-based Wazuh server.
+The environment consists of Windows and Linux systems monitored through Wazuh.
 
 ![Active Agents](screenshots/wazuh-active-agents.png)
 
 ---
 
-## MITRE ATT&CK Mapping
+## MITRE ATT&CK Validation
 
-Atomic Red Team simulations were successfully detected and mapped to MITRE ATT&CK techniques through Wazuh correlation rules.
+Atomic Red Team simulations were successfully detected and mapped to MITRE ATT&CK techniques through custom Wazuh rules.
 
-![MITRE ATT&CK Detection](screenshots/wazuh-mitre-t1053.png)
+![MITRE ATT\&CK Detection](screenshots/wazuh-mitre-t1053.png)
 
 ---
 
 ## Custom Detection Rules
 
-Custom detection rules were developed and validated against Atomic Red Team tests.
-
----
-
 ### Rule 115001 — Scheduled Task Detection
 
-**MITRE ATT&CK:** T1053 - Scheduled Task  
-**Description:** A Newly Scheduled Task has been Detected on the monitored endpoint.
+**MITRE ATT&CK:** T1053 - Scheduled Task
 
 ```xml
-<group name="windows,sysmon,custom_detection,">
-  <rule id="115001" level="10">
-    <if_sid>61613</if_sid>
-    <field name="win.eventdata.ruleName">technique_id=T1053</field>
-    <description>A Newly Scheduled Task has been Detected on $(agent.name)</description>
-    <mitre>
-      <id>T1053</id>
-    </mitre>
-  </rule>
-</group>
+<rule id="115001" level="10">
+  <if_group>windows</if_group>
+  <field name="win.eventdata.ruleName" type="pcre2">
+    technique_id=T1053,technique_name=Scheduled Task
+  </field>
+  <description>
+    A Newly Scheduled Task has been Detected on $(win.system.computer)
+  </description>
+  <mitre>
+    <id>T1053</id>
+  </mitre>
+</rule>
 ```
 
 **Detection Example**
@@ -105,14 +97,17 @@ Custom detection rules were developed and validated against Atomic Red Team test
 
 ### Rule 115003 — Security Software Discovery
 
-**MITRE ATT&CK:** T1518 - Security Software Discovery  
-**Description:** Security Software Discovery Attempt detected via `fltmc.exe` execution on the monitored endpoint.
+**MITRE ATT&CK:** T1518 - Security Software Discovery
 
 ```xml
 <rule id="115003" level="10">
-  <if_sid>61603</if_sid>
-  <field name="win.eventdata.image">(?i)fltmc\.exe</field>
-  <description>Security Software Discovery Attempt has been Detected on $(agent.name)</description>
+  <if_group>windows</if_group>
+  <field name="win.eventdata.ruleName" type="pcre2">
+    technique_id=T1518.001,technique_name=Security Software Discovery
+  </field>
+  <description>
+    Security Software Discovery Attempt has been Detected on $(win.system.computer)
+  </description>
   <mitre>
     <id>T1518</id>
   </mitre>
@@ -125,35 +120,108 @@ Custom detection rules were developed and validated against Atomic Red Team test
 
 ---
 
+## Threat Intelligence Integration
+
+The lab was extended with AlienVault OTX Threat Intelligence feeds integrated into Wazuh using custom CDB lists and correlation rules.
+
+### Capabilities
+
+* AlienVault OTX IOC ingestion
+* Custom blacklist generation
+* CDB List management
+* IOC correlation
+* Malicious IP detection
+* Threat Hunting validation
+
+---
+
+### Rule 100200 — AlienVault Blacklist Detection
+
+Detects source IP addresses present in the imported AlienVault blacklist.
+
+```xml
+<group name="attack,">
+  <rule id="100200" level="10">
+    <if_group>web|attack|attacks</if_group>
+    <list field="srcip" lookup="address_match_key">
+      etc/lists/blacklist-alienvault
+    </list>
+    <description>
+      Firewall-Drop: IP $(srcip) Reportado como Malicioso na blacklist-alienvault
+    </description>
+  </rule>
+</group>
+```
+
+### Detection Example
+
+Successful detection of an IP address found in the AlienVault blacklist feed.
+
+![AlienVault Detection](screenshots/Wazuh-AlienVault-Threat-Intel-Detection.png)
+
+---
+
+### Event Details
+
+The alert was successfully correlated against the imported IOC list and generated by custom Rule 100200.
+
+![AlienVault Detection Details](screenshots/Wazuh-AlienVault-Rule100200-Event-Details.png)
+
+---
+
+## Threat Hunting Workflow
+
+1. Event generated on endpoint
+2. Log collected by Wazuh Agent
+3. Event sent to Wazuh Manager
+4. Source IP evaluated against CDB blacklist
+5. IOC match identified
+6. Custom rule triggered
+7. Alert generated
+8. Analyst investigates event
+
+---
+
 ## Skills Demonstrated
 
-- Detection Engineering
-- SIEM Administration
-- Threat Hunting
-- Endpoint Monitoring
-- Sysmon Deployment
-- MITRE ATT&CK Mapping
-- Atomic Red Team Testing
-- Log Analysis
-- Wazuh Administration
-- Security Monitoring
+* Detection Engineering
+* Threat Hunting
+* Threat Intelligence
+* IOC Management
+* SIEM Administration
+* Security Monitoring
+* Sysmon Deployment
+* MITRE ATT&CK Mapping
+* Atomic Red Team Testing
+* CDB Lists
+* Docker Administration
+* Log Analysis
+* Incident Investigation
+* Wazuh Administration
 
 ---
 
 ## Future Improvements
 
-- Linux Threat Hunting
-- YARA Integration
-- VirusTotal Integration
-- Grafana Dashboards
-- Additional Detection Rules
-- Multi-endpoint Monitoring
+* Active Response Automation
+* Sigma Rule Conversion
+* Additional Threat Intelligence Sources
+* Linux Threat Hunting
+* Multi-Endpoint Monitoring
+* Advanced Grafana Dashboards
 
 ---
 
 ## Author
 
-**Angelo Morozini**  
-Cybersecurity Student focused on Blue Team Operations, Threat Hunting, Detection Engineering and Security Monitoring.
+**Angelo Morozini**
+
+Cybersecurity Student focused on:
+
+* Blue Team Operations
+* Detection Engineering
+* Threat Hunting
+* Threat Intelligence
+* Security Monitoring
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Angelo%20Morozini-blue?logo=linkedin)](https://www.linkedin.com/in/angelo-morozini)
