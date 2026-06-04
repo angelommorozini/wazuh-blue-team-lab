@@ -252,7 +252,7 @@ The following example shows Linux command execution events collected by Auditd a
 - Active Response Automation
 - Sigma Rule Integration
 - Additional Threat Intelligence Sources
-- Linux Threat Hunting Scenarios
+- Advanced Linux Threat Hunting Scenarios
 - Multi-Endpoint Environment
 - Advanced Grafana Dashboards
 - SOAR Integrations
