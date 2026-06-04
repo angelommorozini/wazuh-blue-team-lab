@@ -165,6 +165,52 @@ Capabilities include:
 
 ---
 
+# VirusTotal Integration
+
+VirusTotal was integrated with Wazuh to enrich file reputation analysis and malware investigation workflows.
+
+Capabilities:
+
+- File Reputation Analysis
+- Malware Detection
+- IOC Enrichment
+- Threat Hunting Support
+- Automated Alert Generation
+
+## Detection Example
+
+The EICAR test file was detected and correlated through VirusTotal integration.
+
+![VirusTotal Detection](screenshots/virustotal-eicar-detection.png)
+
+---
+
+# Active Response
+
+Wazuh Active Response was configured to automatically react to malicious file detections and security events.
+
+Capabilities:
+
+- Automated Response
+- Incident Containment
+- Endpoint Remediation
+- Malware Quarantine
+- Security Automation
+
+## Detection and Response Workflow
+
+1. Malicious file detected
+2. Event collected by Wazuh Agent
+3. Alert generated
+4. VirusTotal reputation checked
+5. Active Response executed
+6. File quarantined
+7. Active Response is triggered
+8. Security alert escalated for investigation
+9. Security investigation initiated
+
+---
+
 ## Rule 100200 — AlienVault Blacklist Detection
 
 ```xml
@@ -282,20 +328,13 @@ The following example shows Linux command execution events collected by Auditd a
 - CDB Lists
 - SIEM Operations
 - Linux Auditd Administration
----
-
-# Future Improvements
-
-- Active Response Automation
-- Sigma Rule Integration
-- Additional Threat Intelligence Sources
-- Advanced Linux Threat Hunting Scenarios
-- Multi-Endpoint Environment
-- Advanced Grafana Dashboards
-- SOAR Integrations
+- Active Response
+- VirusTotal Integration
+- YARA
+- Malware Analysis Fundamentals
+- Security Automation
 
 ---
-
 # Author
 
 **Angelo Morozini**
