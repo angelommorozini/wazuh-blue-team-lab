@@ -1,100 +1,170 @@
 # Wazuh Blue Team Lab
 
-A hands-on Blue Team and Threat Hunting laboratory built with Wazuh, Sysmon, Atomic Red Team, Auditd, and Threat Intelligence integrations.
+![Wazuh](https://img.shields.io/badge/Wazuh-v4.14.5-blue)
+![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
+![Sysmon](https://img.shields.io/badge/Sysmon-Endpoint%20Monitoring-green)
+![Threat Intelligence](https://img.shields.io/badge/Threat%20Intelligence-AlienVault%20OTX-yellow)
+![Grafana](https://img.shields.io/badge/Grafana-Dashboard-orange)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 
-This project was created to practice security monitoring, detection engineering, threat hunting, and incident investigation techniques in a controlled environment.
-
----
-
-## Lab Architecture
-
-### Components
-
-- Wazuh Manager (Ubuntu Server)
-- Windows 10 Endpoint
-- Wazuh Agent
-- Sysmon
-- Atomic Red Team
-- Linux Auditd
-- Threat Intelligence Integration
-- Grafana Dashboards
+> Blue Team laboratory focused on Detection Engineering, Threat Hunting, Threat Intelligence, Security Monitoring and Incident Investigation using Wazuh, Sysmon, Atomic Red Team, Grafana and AlienVault OTX.
 
 ---
 
-## Security Monitoring Capabilities
+# Overview
 
-### Windows Monitoring
+This project documents the deployment of a complete Security Operations Center (SOC) laboratory built around Wazuh SIEM.
 
-- Process Creation Monitoring
-- Registry Activity Monitoring
-- File Creation Detection
-- Scheduled Task Monitoring
-- PowerShell Monitoring
-- Sysmon Event Collection
+The environment was designed to simulate real-world Blue Team operations including:
 
-### Linux Monitoring
-
-- Auditd Integration
-- Command Execution Auditing
-- Process Monitoring
-- Privileged Activity Tracking
-- Real-Time Event Collection
-
-### Threat Detection
-
-- MITRE ATT&CK Mapping
-- Atomic Red Team Simulations
-- IOC Detection
-- Threat Intelligence Correlation
-- Threat Hunting Workflows
+- Security Monitoring
+- Detection Engineering
+- Threat Hunting
+- Threat Intelligence
+- MITRE ATT&CK Validation
+- Incident Investigation
+- Dashboard Visualization
+- IOC Correlation
 
 ---
 
-# Dashboard Examples
+# Lab Architecture
 
-## Active Agents Monitoring
+| Component | Purpose |
+|------------|------------|
+| Wazuh Manager | Central SIEM |
+| Ubuntu Server | Hosts Wazuh stack |
+| Windows 10 | Monitored Endpoint |
+| Kali Linux | Attack Simulation Platform |
+| Sysmon | Endpoint Telemetry |
+| Atomic Red Team | ATT&CK Simulations |
+| AlienVault OTX | Threat Intelligence Feed |
+| Grafana | Security Dashboards |
+| Docker | Container Management |
+| Portainer | Docker Administration |
 
-Displays all connected Wazuh agents and their status.
+---
+
+# Active Agents
+
+Windows and Linux systems monitored by Wazuh Agents.
 
 ![Active Agents](screenshots/wazuh-active-agents.png)
 
 ---
 
-## MITRE ATT&CK Dashboard
+# MITRE ATT&CK Validation
 
-Visualization of security events mapped to MITRE ATT&CK techniques.
+Atomic Red Team tests were executed and successfully mapped to MITRE ATT&CK techniques through custom Wazuh detection rules.
 
-![MITRE Dashboard](screenshots/wazuh-mitre-t1053.png)
+![MITRE ATT&CK Detection](screenshots/wazuh-mitre-t1053.png)
 
 ---
 
-## Scheduled Task Detection (T1053)
+# Custom Detection Engineering
 
-Detection generated after executing Atomic Red Team tests related to Scheduled Tasks.
+## Rule 115001 — Scheduled Task Detection
+
+**MITRE ATT&CK:** T1053 - Scheduled Task
+
+```xml
+<rule id="115001" level="10">
+  <if_group>windows</if_group>
+  <field name="win.eventdata.ruleName" type="pcre2">
+    technique_id=T1053,technique_name=Scheduled Task
+  </field>
+  <description>
+    A Newly Scheduled Task has been Detected on $(win.system.computer)
+  </description>
+  <mitre>
+    <id>T1053</id>
+  </mitre>
+</rule>
+```
+
+### Detection Example
 
 ![Scheduled Task Detection](screenshots/scheduled-task-detection.png)
 
 ---
 
+## Rule 115003 — Security Software Discovery
+
+**MITRE ATT&CK:** T1518 - Security Software Discovery
+
+```xml
+<rule id="115003" level="10">
+  <if_group>windows</if_group>
+  <field name="win.eventdata.ruleName" type="pcre2">
+    technique_id=T1518.001,technique_name=Security Software Discovery
+  </field>
+  <description>
+    Security Software Discovery Attempt has been Detected on $(win.system.computer)
+  </description>
+  <mitre>
+    <id>T1518</id>
+  </mitre>
+</rule>
+```
+
+### Detection Example
+
+![Security Software Discovery](screenshots/security-software-discovery-t1518.png)
+
+---
+
+# Threat Intelligence Integration
+
+AlienVault OTX was integrated into Wazuh using custom scripts, CDB lists and correlation rules.
+
+Capabilities include:
+
+- IOC Feed Ingestion
+- Threat Intelligence Correlation
+- Malicious IP Detection
+- Custom Blacklists
+- Threat Hunting Validation
+- Event Enrichment
+
+---
+
+## Rule 100200 — AlienVault Blacklist Detection
+
+```xml
+<group name="attack,">
+  <rule id="100200" level="10">
+    <if_group>web|attack|attacks</if_group>
+    <list field="srcip" lookup="address_match_key">
+      etc/lists/blacklist-alienvault
+    </list>
+    <description>
+      Firewall-Drop: IP $(srcip) Reportado como Malicioso na blacklist-alienvault
+    </description>
+  </rule>
+</group>
+```
+
+---
+
 ## Threat Intelligence Detection
 
-IOC detection using AlienVault OTX Threat Intelligence feeds integrated with Wazuh.
+Successful detection of an IOC imported from AlienVault OTX.
 
-![Threat Intelligence Detection](screenshots/Wazuh-AlienVault-Threat-Intel-Detection.png)
-
----
-
-## Threat Intelligence Event Details
-
-Detailed alert generated by a Threat Intelligence match.
-
-![Threat Intelligence Details](screenshots/Wazuh-AlienVault-Rule100200-Event-Details.png)
+![AlienVault Detection](screenshots/Wazuh-AlienVault-Threat-Intel-Detection.png)
 
 ---
 
-## Threat Intelligence Geomap
+## Event Details
 
-Grafana dashboard used to visualize the geographic location of threat intelligence indicators detected by Wazuh.
+Detailed event generated by custom Rule 100200.
+
+![AlienVault Detection Details](screenshots/Wazuh-AlienVault-Rule100200-Event-Details.png)
+
+---
+
+# Grafana Threat Intelligence Dashboard
+
+Threat Intelligence events generated by Wazuh were integrated into Grafana dashboards for geographic visualization and IOC tracking.
 
 Features:
 
@@ -105,81 +175,101 @@ Features:
 - Security Analytics
 - Threat Intelligence Correlation
 
-![Threat Intelligence Geomap](screenshots/grafana-threat-intelligence-geomap.png)
+### Dashboard Example
 
----
-
-## Linux Auditd Monitoring
-
-Linux Auditd integrated with Wazuh to monitor command execution and privileged activities.
-
-Features:
-
-- Command Execution Auditing
-- Process Monitoring
-- Privileged Activity Tracking
-- Linux Threat Hunting Telemetry
-- Real-Time Event Collection
-
-### Auditd Command Execution Events
-
-![Linux Auditd Monitoring](screenshots/wazuh-linux-audit-monitoring.png)
+![Grafana Threat Intelligence Geomap](screenshots/grafana-threat-intelligence-geomap.png)
 
 ---
 
 # Threat Hunting Workflow
 
 1. Event generated on endpoint
-2. Sysmon or Auditd collects telemetry
-3. Wazuh Agent forwards logs
-4. Wazuh Manager analyzes events
-5. Rules generate alerts
-6. Events are mapped to MITRE ATT&CK
-7. Threat Intelligence correlation is performed
-8. Analyst investigates alerts
-9. Dashboards provide visibility and hunting capabilities
+2. Wazuh Agent collects telemetry
+3. Event forwarded to Wazuh Manager
+4. IOC compared against AlienVault blacklist
+5. Threat match identified
+6. Correlation rule triggered
+7. Alert generated
+8. Threat investigation initiated
 
 ---
 
+
+# Linux Auditd Monitoring
+
+Auditd was integrated with Wazuh to provide Linux command execution visibility and support Threat Hunting activities on Linux systems.
+
+The configuration monitors process execution events (`execve`) and forwards them to Wazuh for analysis and correlation.
+
+Capabilities include:
+
+- Linux Command Auditing
+- Privileged Command Monitoring
+- Process Execution Tracking
+- Threat Hunting on Linux Endpoints
+- Auditd Integration with Wazuh
+- Security Event Correlation
+
+## Audit Rules
+
+```bash
+-a always,exit -F arch=b64 -S execve -F auid=1000 -F egid!=994 -F auid!=-1 -F key=audit-wazuh-c
+
+-a always,exit -F arch=b64 -S execve -F euid=0 -F auid>=1000 -F auid!=-1 -F key=audit-wazuh-c
+```
+
+## Audit Monitoring Example
+
+The following example shows Linux command execution events collected by Auditd and successfully forwarded to Wazuh for monitoring and analysis.
+
+![Linux Audit Monitoring](screenshots/wazuh-linux-audit-monitoring.png)
+
+---
 # Skills Demonstrated
 
-- Security Monitoring
-- Threat Hunting
 - Detection Engineering
-- SIEM Administration
-- Wazuh Management
-- Windows Security Monitoring
-- Linux Security Monitoring
-- Sysmon Configuration
-- Auditd Configuration
-- MITRE ATT&CK Framework
-- Atomic Red Team
-- Threat Intelligence Integration
-- Grafana Dashboards
+- Threat Hunting
+- Threat Intelligence
+- Security Monitoring
+- IOC Management
 - Incident Investigation
-
+- Wazuh Administration
+- Sysmon Deployment
+- MITRE ATT&CK Mapping
+- Atomic Red Team
+- Grafana Dashboard Creation
+- Geospatial Threat Visualization
+- Docker Administration
+- Log Analysis
+- Custom Rule Development
+- CDB Lists
+- SIEM Operations
+- Linux Auditd Administration
 ---
 
 # Future Improvements
 
-- YARA Integration
-- VirusTotal Integration
-- Custom Detection Rules
 - Active Response Automation
-- Sigma Rule Conversion
-- Advanced Threat Hunting Dashboards
-- Additional Atomic Red Team Tests
+- Sigma Rule Integration
+- Additional Threat Intelligence Sources
+- Linux Threat Hunting Scenarios
+- Multi-Endpoint Environment
+- Advanced Grafana Dashboards
+- SOAR Integrations
 
 ---
 
 # Author
 
-Angelo Morozini
+**Angelo Morozini**
 
-Aspiring SOC Analyst | Blue Team | Cybersecurity
+Cybersecurity Student focused on:
+
+- Blue Team Operations
+- Detection Engineering
+- Threat Hunting
+- Threat Intelligence
+- Security Monitoring
 
 LinkedIn:
-https://www.linkedin.com/in/deaWGRXX
-
-GitHub:
-https://github.com/angelommorozini
+https://www.linkedin.com/in/angelo-morozini
