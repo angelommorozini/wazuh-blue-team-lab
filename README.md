@@ -179,9 +179,9 @@ Capabilities:
 
 ## Detection Example
 
-The EICAR test file was detected and correlated through VirusTotal integration.
+The EICAR test file was detected by Wazuh and enriched through VirusTotal integration, providing file reputation analysis and malware detection results.
 
-![VirusTotal Detection](screenshots/virustotal-eicar-detection.png)
+![VirusTotal Detection](screenshots/virustotal-detection.png)
 
 ---
 
