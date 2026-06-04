@@ -1,76 +1,69 @@
 # Wazuh Blue Team Lab
 
 ![Wazuh](https://img.shields.io/badge/Wazuh-v4.14.5-blue)
-![MITRE ATT\&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
+![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
 ![Sysmon](https://img.shields.io/badge/Sysmon-Endpoint%20Monitoring-green)
 ![Threat Intelligence](https://img.shields.io/badge/Threat%20Intelligence-AlienVault%20OTX-yellow)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 ![Grafana](https://img.shields.io/badge/Grafana-Dashboard-orange)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 
-> A hands-on Security Monitoring Lab simulating real-world Blue Team operations using Wazuh, Sysmon, Atomic Red Team, Threat Intelligence feeds, and custom detection engineering.
-
----
-
-## Overview
-
-This project documents the deployment of a Wazuh-based Security Monitoring Lab focused on:
-
-* Security Monitoring
-* Detection Engineering
-* Threat Hunting
-* Threat Intelligence
-* MITRE ATT&CK Validation
-* Incident Investigation
-
-The environment includes:
-
-* Wazuh Manager (Docker)
-* Ubuntu Server
-* Windows 10 Endpoint
-* Kali Linux Attack Machine
-* Sysmon Telemetry
-* Atomic Red Team Simulations
-* AlienVault OTX Threat Intelligence
-* Grafana Dashboards
-* Custom Detection Rules
+> Blue Team laboratory focused on Detection Engineering, Threat Hunting, Threat Intelligence, Security Monitoring and Incident Investigation using Wazuh, Sysmon, Atomic Red Team, Grafana and AlienVault OTX.
 
 ---
 
-## Lab Architecture
+# Overview
 
-| Component          | Description                   |
-| ------------------ | ----------------------------- |
-| Wazuh Manager      | Centralized SIEM platform     |
-| Ubuntu Server      | Hosts Wazuh services          |
-| Windows 10         | Monitored endpoint            |
-| Kali Linux         | Attack simulation workstation |
-| Sysmon             | Endpoint telemetry            |
-| Atomic Red Team    | ATT&CK technique simulation   |
-| AlienVault OTX     | Threat Intelligence feed      |
-| Docker + Portainer | Container management          |
-| Grafana            | Dashboard visualization       |
+This project documents the deployment of a complete Security Operations Center (SOC) laboratory built around Wazuh SIEM.
+
+The environment was designed to simulate real-world Blue Team operations including:
+
+- Security Monitoring
+- Detection Engineering
+- Threat Hunting
+- Threat Intelligence
+- MITRE ATT&CK Validation
+- Incident Investigation
+- Dashboard Visualization
+- IOC Correlation
 
 ---
 
-## Active Agents
+# Lab Architecture
 
-The environment consists of Windows and Linux systems monitored through Wazuh.
+| Component | Purpose |
+|------------|------------|
+| Wazuh Manager | Central SIEM |
+| Ubuntu Server | Hosts Wazuh stack |
+| Windows 10 | Monitored Endpoint |
+| Kali Linux | Attack Simulation Platform |
+| Sysmon | Endpoint Telemetry |
+| Atomic Red Team | ATT&CK Simulations |
+| AlienVault OTX | Threat Intelligence Feed |
+| Grafana | Security Dashboards |
+| Docker | Container Management |
+| Portainer | Docker Administration |
+
+---
+
+# Active Agents
+
+Windows and Linux systems monitored by Wazuh Agents.
 
 ![Active Agents](screenshots/wazuh-active-agents.png)
 
 ---
 
-## MITRE ATT&CK Validation
+# MITRE ATT&CK Validation
 
-Atomic Red Team simulations were successfully detected and mapped to MITRE ATT&CK techniques through custom Wazuh rules.
+Atomic Red Team tests were executed and successfully mapped to MITRE ATT&CK techniques through custom Wazuh detection rules.
 
-![MITRE ATT\&CK Detection](screenshots/wazuh-mitre-t1053.png)
+![MITRE ATT&CK Detection](screenshots/wazuh-mitre-t1053.png)
 
 ---
 
-## Custom Detection Rules
+# Custom Detection Engineering
 
-### Rule 115001 — Scheduled Task Detection
+## Rule 115001 — Scheduled Task Detection
 
 **MITRE ATT&CK:** T1053 - Scheduled Task
 
@@ -89,13 +82,13 @@ Atomic Red Team simulations were successfully detected and mapped to MITRE ATT&C
 </rule>
 ```
 
-**Detection Example**
+### Detection Example
 
 ![Scheduled Task Detection](screenshots/scheduled-task-detection.png)
 
 ---
 
-### Rule 115003 — Security Software Discovery
+## Rule 115003 — Security Software Discovery
 
 **MITRE ATT&CK:** T1518 - Security Software Discovery
 
@@ -114,30 +107,28 @@ Atomic Red Team simulations were successfully detected and mapped to MITRE ATT&C
 </rule>
 ```
 
-**Detection Example**
+### Detection Example
 
 ![Security Software Discovery](screenshots/security-software-discovery-t1518.png)
 
 ---
 
-## Threat Intelligence Integration
+# Threat Intelligence Integration
 
-The lab was extended with AlienVault OTX Threat Intelligence feeds integrated into Wazuh using custom CDB lists and correlation rules.
+AlienVault OTX was integrated into Wazuh using custom scripts, CDB lists and correlation rules.
 
-### Capabilities
+Capabilities include:
 
-* AlienVault OTX IOC ingestion
-* Custom blacklist generation
-* CDB List management
-* IOC correlation
-* Malicious IP detection
-* Threat Hunting validation
+- IOC Feed Ingestion
+- Threat Intelligence Correlation
+- Malicious IP Detection
+- Custom Blacklists
+- Threat Hunting Validation
+- Event Enrichment
 
 ---
 
-### Rule 100200 — AlienVault Blacklist Detection
-
-Detects source IP addresses present in the imported AlienVault blacklist.
+## Rule 100200 — AlienVault Blacklist Detection
 
 ```xml
 <group name="attack,">
@@ -153,75 +144,101 @@ Detects source IP addresses present in the imported AlienVault blacklist.
 </group>
 ```
 
-### Detection Example
+---
 
-Successful detection of an IP address found in the AlienVault blacklist feed.
+## Threat Intelligence Detection
+
+Successful detection of an IOC imported from AlienVault OTX.
 
 ![AlienVault Detection](screenshots/Wazuh-AlienVault-Threat-Intel-Detection.png)
 
 ---
 
-### Event Details
+## Event Details
 
-The alert was successfully correlated against the imported IOC list and generated by custom Rule 100200.
+Detailed event generated by custom Rule 100200.
 
 ![AlienVault Detection Details](screenshots/Wazuh-AlienVault-Rule100200-Event-Details.png)
 
 ---
 
-## Threat Hunting Workflow
+# Grafana Threat Intelligence Dashboard
+
+Threat Intelligence events generated by Wazuh were integrated into Grafana dashboards for geographic visualization and IOC tracking.
+
+Features:
+
+- IOC Geolocation
+- Geographic Threat Visualization
+- Threat Hunting Dashboard
+- Real-Time Event Monitoring
+- Security Analytics
+- Threat Intelligence Correlation
+
+### Dashboard Example
+
+![Grafana Threat Intelligence Geomap](screenshots/grafana-threat-intelligence-geomap.png)
+
+---
+
+# Threat Hunting Workflow
 
 1. Event generated on endpoint
-2. Log collected by Wazuh Agent
-3. Event sent to Wazuh Manager
-4. Source IP evaluated against CDB blacklist
-5. IOC match identified
-6. Custom rule triggered
+2. Wazuh Agent collects telemetry
+3. Event forwarded to Wazuh Manager
+4. IOC compared against AlienVault blacklist
+5. Threat match identified
+6. Correlation rule triggered
 7. Alert generated
-8. Analyst investigates event
+8. Threat investigation initiated
 
 ---
 
-## Skills Demonstrated
+# Skills Demonstrated
 
-* Detection Engineering
-* Threat Hunting
-* Threat Intelligence
-* IOC Management
-* SIEM Administration
-* Security Monitoring
-* Sysmon Deployment
-* MITRE ATT&CK Mapping
-* Atomic Red Team Testing
-* CDB Lists
-* Docker Administration
-* Log Analysis
-* Incident Investigation
-* Wazuh Administration
-
----
-
-## Future Improvements
-
-* Active Response Automation
-* Sigma Rule Conversion
-* Additional Threat Intelligence Sources
-* Linux Threat Hunting
-* Multi-Endpoint Monitoring
-* Advanced Grafana Dashboards
+- Detection Engineering
+- Threat Hunting
+- Threat Intelligence
+- Security Monitoring
+- IOC Management
+- Incident Investigation
+- Wazuh Administration
+- Sysmon Deployment
+- MITRE ATT&CK Mapping
+- Atomic Red Team
+- Grafana Dashboard Creation
+- Geospatial Threat Visualization
+- Docker Administration
+- Log Analysis
+- Custom Rule Development
+- CDB Lists
+- SIEM Operations
 
 ---
 
-## Author
+# Future Improvements
+
+- Active Response Automation
+- Sigma Rule Integration
+- Additional Threat Intelligence Sources
+- Linux Threat Hunting Scenarios
+- Multi-Endpoint Environment
+- Advanced Grafana Dashboards
+- SOAR Integrations
+
+---
+
+# Author
 
 **Angelo Morozini**
 
 Cybersecurity Student focused on:
 
-* Blue Team Operations
-* Detection Engineering
-* Threat Hunting
-* Threat Intelligence
-* Security Monitoring
+- Blue Team Operations
+- Detection Engineering
+- Threat Hunting
+- Threat Intelligence
+- Security Monitoring
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Angelo%20Morozini-blue?logo=linkedin)](https://www.linkedin.com/in/angelo-morozini)
+LinkedIn:
+https://www.linkedin.com/in/angelo-morozini
