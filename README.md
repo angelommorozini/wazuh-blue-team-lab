@@ -45,6 +45,43 @@ The environment was designed to simulate real-world Blue Team operations includi
 
 ---
 
+# SOC Monitoring Dashboard
+
+Main security monitoring dashboard used to visualize events, alerts, agent activity, MITRE ATT&CK coverage and threat hunting data collected by the Wazuh SIEM platform.
+
+The dashboard currently monitors more than 200,000 events and provides visibility into security alerts, agent activity and detection coverage across the lab environment.
+
+Features displayed:
+
+- Total Events
+- Active Alerts
+- Severity Distribution
+- Agent Monitoring
+- Event Categorization
+- Security Analytics
+
+![Wazuh Overview Dashboard](screenshots/wazuh-overview-dashboard.png)
+
+---
+
+# Threat Hunting Dashboard
+
+Threat Hunting dashboard used to identify suspicious activity, analyze MITRE ATT&CK techniques and investigate security events across the environment.
+
+Features:
+
+- MITRE ATT&CK Visualization
+- Alert Trend Analysis
+- Security Event Correlation
+- Top Attack Techniques
+- Agent Activity Monitoring
+- Threat Hunting Workflows
+- Detection Coverage Analysis
+
+![Threat Hunting Dashboard](screenshots/wazuh-threat-hunting-dashboard.png)
+
+---
+
 # Active Agents
 
 Windows and Linux systems monitored by Wazuh Agents.
